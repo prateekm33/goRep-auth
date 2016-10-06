@@ -7,20 +7,27 @@ export default class App extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    console.log('SUBMITTING...');
+    console.log('SUBMITTING!!...');
     // TODO: handle authentication with backend DB
 
-
+    const self = this;
     // TODO: Refactor to use RxJS
-    $.ajax({
-      type: 'POST', 
-      url: require('../env').authAppServer + '/auth/local',
-      contentType: 'application/json', 
-      success: (r) => {
-        window.location.replace(require('../env').mainAppServer);
-      },
-      error: (e) => { console.log('[ERROR] Error submitting info to server: ', e)}
-    });
+    let username = document.getElementById('username-input').value || 'temp username';
+
+    let url = require('../env').authAppServer + '/auth/local';
+    let options = {
+      method: 'POST', 
+      contentType: 'application/json',
+      body: JSON.stringify({user: username})
+    }
+
+    fetch(url, options)
+      .then(() => { console.log('sucess posting to server...'); })
+      .catch(self.handleError);
+  }
+
+  handleError(e) {
+    console.log('[ERROR] Error submitting : ', e);
   }
 
   render() {
